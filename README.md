@@ -2,6 +2,10 @@
 
 This application is a capacity calculator for Aruba Cloud services. It allows users to estimate costs for various cloud resources including compute, storage, networking, and container services.
 
+CloudCost Navigator is an intuitive web application that allows users to plan and activate Aruba Cloud resources, staying within their desired budget, with a simple click.
+
+CloudCost Navigator is designed to transform the way businesses and developers manage cloud resources. Leveraging an integrated cost analysis from the Aruba Cloud catalog, it allows users to explore different combinations of resources such as compute, networking, and storage, evaluating the most economical and efficient solution. The platform offers a user-friendly interface that includes a dynamic cost calculator and advanced configuration options to customize resources based on specific needs. Thanks to direct integration with the Aruba Cloud APIs, resource activation is quick and secure, optimizing time and resources.
+
 ## Features
 
 - Interactive UI for selecting cloud resources
