@@ -16,7 +16,7 @@ This application is a capacity calculator for Aruba Cloud services. It allows us
 2. Navigate to the project directory: cd aruba-cloud-calculator
 3. Install the dependencies: npm install
 4. Run the development server: npm run dev
-5. 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## How It Works
 
