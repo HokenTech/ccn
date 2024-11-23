@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calculator, Server, HardDrive, Network, Box, RotateCcw } from 'lucide-react'
+import { Calculator, Server, HardDrive, Network, Box, RotateCcw, Send } from 'lucide-react'
+import { toast } from "@/components/ui/use-toast"
 
 // Types
 type Flavor = {
@@ -815,6 +816,7 @@ export default function Component() {
   const [selectedPeriod, setSelectedPeriod] = useState('1 Hour')
   const [costBreakdown, setCostBreakdown] = useState<{ name: string; cost: number }[]>([])
   const [totalCost, setTotalCost] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Helper Functions
   const getPriceForPeriod = (resource: Resource, period: string) => {
@@ -862,8 +864,69 @@ export default function Component() {
     setTotalCost(0)
   }
 
-  // Render
-  return (
+  const activateOffer = async () => {
+    setIsLoading(true)
+    try {
+      const computeResource = catalogData.computing.find(c => c.flavor?.name === selectedCompute)
+      const storageResource = catalogData.storage[0]
+      const networkingResource = catalogData.networking.find(n => n.resourceName === selectedNetworking)
+      const containerResource = catalogData.container.find(c => c.flavor?.name === selectedContainer || c.productName === selectedContainer)
+
+      const requestData = {
+        compute: computeResource ? {
+          flavorId: computeResource.flavor?.id,
+          osType: computeResource.flavor?.osPlatform,
+          quantity: 1
+        } : null,
+        storage: {
+          type: 'blockStorage',
+          size: selectedStorage
+        },
+        networking: networkingResource ? {
+          type: networkingResource.resourceName,
+          quantity: 1
+        } : null,
+        container: containerResource ? {
+          type: containerResource.productName,
+          flavorId: containerResource.flavor?.id,
+          quantity: 1
+        } : null,
+        billingPeriod: selectedPeriod
+      }
+
+      // Qui dovresti inserire l'URL effettivo dell'API Aruba
+      const response = await fetch('https://api.arubacloud.com/v2/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer YOUR_API_KEY_HERE' // Sostituisci con la tua chiave API
+        },
+        body: JSON.stringify(requestData)
+      })
+
+      if (!response.ok) {
+        throw new Error('Errore nella richiesta API')
+      }
+
+      const result = await response.json()
+      toast({
+        title: "Offerta attivata con successo",
+        description: `ID ordine: ${result.orderId}`,
+      })
+    } catch (error) {
+      console.error('Errore durante l\'attivazione dell\'offerta:', error)
+      toast({
+        title: "Errore nell'attivazione dell'offerta",
+        description: "Si è verificato un errore. Riprova più tardi.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+   // Render
+   return (
     <div className="container mx-auto p-6">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
@@ -1019,7 +1082,7 @@ export default function Component() {
                       </div>
                     ))}
                     <div className="border-t pt-2 mt-2">
-                      <div className="flex justify-between items-center font-bold">
+                <div className="flex justify-between items-center font-bold">
                         <span>Costo Totale:</span>
                         <span>€{totalCost.toFixed(3)}/{selectedPeriod.toLowerCase()}</span>
                       </div>
@@ -1027,6 +1090,16 @@ export default function Component() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Button 
+                className="w-full" 
+                onClick={activateOffer}
+                size="lg"
+                disabled={isLoading || totalCost === 0}
+              >
+                <Send className="mr-2 h-4 w-4" />
+                {isLoading ? 'Attivazione in corso...' : 'Attiva Offerta'}
+              </Button>
 
               <Button onClick={resetAll} variant="outline" className="w-full">
                 <RotateCcw className="mr-2 h-4 w-4" />
