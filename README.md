@@ -22,6 +22,10 @@ CloudCost Navigator is designed to transform the way businesses and developers m
 4. Run the development server: npm run dev
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Demo
+
+https://youtu.be/793nOPBm1iI
+
 ## How It Works
 
 The application is built using Next.js and React, with Tailwind CSS for styling. Here's a breakdown of the main components:
