@@ -24,7 +24,7 @@ CloudCost Navigator is designed to transform the way businesses and developers m
 
 ## Demo
 
-https://youtu.be/793nOPBm1iI
+https://youtu.be/YkGTGkea3ss
 
 ## How It Works
 
